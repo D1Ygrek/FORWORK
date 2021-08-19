@@ -7,10 +7,104 @@
     <title>Document</title>
 </head>
 <body>
+    <style>
+        table{
+            border-spacing: 0;
+            background-color: rgb(31,31,31);
+            color:white;
+        }
+        td{
+            border: 1px solid rgb(128,128,128);
+            height: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .modal-overlay{
+            opacity: 0;
+            visibility: hidden;
+            position:fixed;
+            top:0;
+            left:0;
+            height:100%;
+            width:100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 20;
+        }
+        .modal-choice{
+            opacity: 0;
+            visibility: hidden;
+            position:fixed;
+            top:50%;
+            left:50%;
+            width:100%;
+            max-width: 500px;
+            height:100%;
+            max-height:400px;
+            transform: translate(-50%,-50%);
+            z-index: 30;
+            background-color: rgb(31,31,31);
+            border-radius: 10px;
+            display:flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .modal-button{
+            margin: 10px 30px 10px 30px;
+            border: 1px solid rgb(31,31,31);
+            font-variant: small-caps;
+            border-radius:5px;
+            font-size:1.7rem;
+            transition:0.2s ease;
+        }
+        .modal-red{
+            background-color: #f00;
+        }
+        .modal-blue{
+            background-color: #00f;
+        }
+        .modal-green{
+            background-color: #0f0;
+        }
+        .modal-dark{
+            background-color: black;
+            color:white;
+        }
+        .modal-button:hover{
+            background-color: rgb(31,31,31);
+            color:white;
+            border-color:white;
+        }
+        .active{
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
     <input type="file" id="fileUpload" />
     <input type="button" id="upload" value="Upload" onclick="Upload()" />
     <hr />
-    <div id="dvExcel"></div>
+    <div>
+        <table id="dvExcel">
+
+        </table>
+    </div>
+    <div id="modal-info" class = "modal-info">
+
+    </div>
+    <div id="modal-choice" class='modal-choice'>
+        <button id="depth" class='modal-button modal-red'>
+            Глубина
+        </button>
+        <button id="north" class='modal-button modal-blue'>
+            Север/Юг
+        </button>
+        <button id="east" class='modal-button modal-green'>
+            Восток/Запад
+        </button>
+        <button id="abort" class='modal-button modal-dark'>
+            Отмена
+        </button>
+    </div>
+    <div id="modal-overlay" class="modal-overlay"></div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
     <script src=profileParse.js></script>

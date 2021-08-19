@@ -97,102 +97,129 @@ function ProcessExcel(data) {
         depth:[]
     }
     if(!found){
-//Место для парсинга отсутствующих херовин
+        var container = document.getElementById('dvExcel')
+        for(var i =0;i<raw_csv.length;i++){
+            container.appendChild(createRow(raw_csv[i].split(';')))
+        }
     }
     else{
-        for(var i = forReadData.rowNumber;i<raw_csv;i++){
+        var state = 'zero';
+        for(var i = forReadData.rowNumber;i<raw_csv.length;i++){
             var temp = raw_csv[i].split(';')
-            //console.log(temp)
-            res.north.push(temp[forReadData.north])
-            res.east.push(temp[forReadData.east])
-            res.depth.push(temp[forReadData.depth])
+            var check = parseFloat(temp[forReadData.north])
+            switch (state){
+                case 'zero':
+                    if(!isNaN(check)){
+                        res.north.push(parseFloat(temp[forReadData.north]))
+                        res.east.push(parseFloat(temp[forReadData.east]))
+                        res.depth.push(parseFloat(temp[forReadData.depth]))
+                        state = 'reading'
+                    }
+                    break;
+                case 'reading':
+                    if(!isNaN(check)){
+                        res.north.push(parseFloat(temp[forReadData.north]))
+                        res.east.push(parseFloat(temp[forReadData.east]))
+                        res.depth.push(parseFloat(temp[forReadData.depth]))
+                    }
+                    else{
+                        state = 'eof'
+                    }
+                    break;
+            }
+            if(state == 'eof'){
+                break
+            }
+            
         }
         console.log(res)
     }
-    
-    
-
-    /*var needToContain=['Описание','Забой','Время']
-    needToContainPositions=[0,0,0]
-    var needRow=0
-    for(var i=0;i<raw_csv.length;i++){
-        var ok=true;
-        needToContain.forEach(function(e){
-            if(raw_csv[i].indexOf(e)==-1){
-                ok=false
-            }
-
-        })
-        if(ok){
-            needRow=i;
-            var temp = raw_csv[needRow].split(';')
-            for(var j=0;j<needToContainPositions.length;j++){
-                for(var t=0;t<temp.length;t++){
-                    if(needToContain[j]==temp[t]){
-                        needToContainPositions[j]=t
-                        break;
-                    }
-                }
-            }
-            break;
-        }
-    }
-    var timeText='Начало бурения:'
-    var timestart=0;
-    for(var i=0;i<raw_csv.length;i++){
-        var stop = false
-        var buf=raw_csv[i].split(';')
-        console.log(buf)
-        for(var j=0;j<buf.length;j++){
-            if(buf[j]==timeText){
-                timestart=buf[j+3]
-                stop=true;
+}
+var target = {
+    element:'',
+    cell:0,
+    row:0,
+    now:''
+}
+var notFoundNames = {
+    depth:{
+        cell:[],
+        row:[]
+    },
+    north:{
+        cell:[],
+        row:[]
+    },
+    east:{
+        cell:[],
+        row:[]
+    },
+}
+function createRow(arrayOfValues){
+    var main = document.createElement('tr')
+    arrayOfValues.forEach(function(e){
+        var col = document.createElement('td')
+        col.innerHTML=e
+        col.addEventListener('click',function(e){
+            target.element = e.target
+            target.cell = e.target.cellIndex
+            target.row= e.target.parentElement.rowIndex
+            /*
+            console.log(e.target.style.backgroundColor)*/
+            switch(e.target.style.backgroundColor){
+                case 'red':
+                    target.now = 'depth'
+                break;
+                case 'blue':
+                    target.now = 'north'
+                break;
+                case 'green':
+                    target.now = 'east'
+                break;
+                default:
+                    target.now='none'
                 break;
             }
-        }
-        if(stop){break;}
-    }
-    console.log(timestart)
-    while(timestart.indexOf('/')!=-1){
-        timestart=timestart.replace('/','.')
-    }
-    while(timestart.indexOf(' ')!=-1){
-        timestart=timestart.replace(' ','.')
-    }
-    while(timestart.indexOf(':')!=-1){
-        timestart=timestart.replace(':','.')
-    }
-    var timestampNumbers=timestart.split('.')
-    var timestartTimestamp = new Date(parseInt(timestampNumbers[2])+2000,parseInt(timestampNumbers[1])-1,parseInt(timestampNumbers[0]),parseInt(timestampNumbers[3]),parseInt(timestampNumbers[4]),0,0)
-    console.log(+timestartTimestamp) //дата начала
-    console.log(needRow)
-    console.log(needToContainPositions)
-    console.log(raw_csv[needRow])
-    var res=[{time: +timestartTimestamp,vD: 0,opr: "",opt: 0}]
-    for(var i = needRow;i<raw_csv.length-2;i++){
-        var buf =raw_csv[i].split(';')
-        
-        
-        var opt = parseFloat(buf[needToContainPositions[2]])
-        var opr = buf[needToContainPositions[0]]
-        var vD = parseInt(buf[needToContainPositions[1]])
-        var time = res[res.length-1].time+(opt*3600*1000)
-        var obj={}
-        obj.time = time
-        obj.vD =vD
-        obj.opr = opr
-        obj.opt = opt
-        if(opr == "Итого, сут.:"){
+            console.log(target)
+            showModalChoice()
+        })
+        main.appendChild(col)
+    })
+    return main
+}
+function showModalChoice(){
+    document.getElementById('modal-choice').classList.add('active')
+    document.getElementById('modal-overlay').classList.add('active')    
+}
+
+for(var i =0;i<document.getElementById('modal-choice').children.length;i++){
+    document.getElementById('modal-choice').children[i].addEventListener('click',function(e){
+        cell = target.element
+        switch(e.target.id){
+            case 'depth':
+                cell.style.backgroundColor='red'
+                notFoundNames.depth.cell.push(cell.cell)
+                notFoundNames.depth.row.push(cell.row)
             break;
+            case 'north':
+                cell.style.backgroundColor='blue'
+                notFoundNames.north.cell.push(cell.cell)
+                notFoundNames.north.row.push(cell.row)
+            break;
+            case 'east':
+                cell.style.backgroundColor='green'
+                notFoundNames.east.cell.push(cell.cell)
+                notFoundNames.east.row.push(cell.row)
+            break;
+            case 'abort':
+                cell.style.backgroundColor='rgb(31,31,31)'
+            break;
+            //нужна логика добавления в "временный список"
         }
-        if(opt!=0){
-
-                console.log(buf)
-                console.log(obj)
-                res.push(obj)
+        if(cell.now!='none'){
+            
         }
-
-        
-    }
-    console.log(res)*/
+        document.getElementById('modal-choice').classList.remove('active')
+        document.getElementById('modal-overlay').classList.remove('active')
+    })
 }
