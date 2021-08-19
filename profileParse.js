@@ -53,6 +53,7 @@ function ProcessExcel(data) {
         len:2
     }
     var forReadData ={
+        rowNumber:0,
         depth:0,
         north:0,
         east:0
@@ -78,6 +79,8 @@ function ProcessExcel(data) {
                 forReadData.depth=nowRow.indexOf(profileVocabulary.depth[parseTypeNumber])
                 forReadData.north=nowRow.indexOf(profileVocabulary.north[parseTypeNumber])
                 forReadData.east=nowRow.indexOf(profileVocabulary.east[parseTypeNumber])
+                console.log(i)
+                forReadData.rowNumber=i+headerNumberOfRows
                 console.log(forReadData)
                 found=true
                 break
@@ -88,7 +91,25 @@ function ProcessExcel(data) {
         }
     }
     console.log(found)
-    //Место для парсинга отсутствующих херовин
+    var res = {
+        north:[],
+        east:[],
+        depth:[]
+    }
+    if(!found){
+//Место для парсинга отсутствующих херовин
+    }
+    else{
+        for(var i = forReadData.rowNumber;i<raw_csv;i++){
+            var temp = raw_csv[i].split(';')
+            //console.log(temp)
+            res.north.push(temp[forReadData.north])
+            res.east.push(temp[forReadData.east])
+            res.depth.push(temp[forReadData.depth])
+        }
+        console.log(res)
+    }
+    
     
 
     /*var needToContain=['Описание','Забой','Время']
