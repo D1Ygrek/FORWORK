@@ -28,6 +28,21 @@ function Upload() {
             alert("This browser does not support HTML5.");
         }
 };
+var profileVocabulary ={
+    depth:[
+        'глубинаповертикали,м',
+        'верт.|глубина|(м)'
+    ],
+    north:[
+        'лок.смещениексеверу,м',
+        '|с/ю|(м)'
+    ],
+    east:[
+        'лок.смещениеквостоку,м',
+        '|в/з|(м)'
+    ],
+    len:1
+}
 function ProcessExcel(data) {
     var workbook = XLSX.read(data, {
         type: 'binary'
@@ -37,21 +52,7 @@ function ProcessExcel(data) {
     var excelRows = XLSX.utils.sheet_to_csv(workbook.Sheets[firstSheet],{FS:';',RS:"|||"});
     var raw_csv = excelRows.split('|||')
 
-    var profileVocabulary ={
-        depth:[
-            'глубинаповертикали,м',
-            'верт.|глубина|(м)'
-        ],
-        north:[
-            'лок.смещениексеверу,м',
-            '|с/ю|(м)'
-        ],
-        east:[
-            'лок.смещениеквостоку,м',
-            '|в/з|(м)'
-        ],
-        len:2
-    }
+    
     var forReadData ={
         rowNumber:0,
         depth:0,
@@ -136,24 +137,17 @@ function ProcessExcel(data) {
     }
 }
 var target = {
-    element:'',
     cell:0,
-    row:0,
-    now:''
+    row:0
 }
 var notFoundNames = {
-    depth:{
-        cell:[],
-        row:[]
+    cells:{
+        depth:-1,
+        north:7,
+        east:-1
     },
-    north:{
-        cell:[],
-        row:[]
-    },
-    east:{
-        cell:[],
-        row:[]
-    },
+    row:8,
+    len:1
 }
 function createRow(arrayOfValues){
     var main = document.createElement('tr')
@@ -161,25 +155,9 @@ function createRow(arrayOfValues){
         var col = document.createElement('td')
         col.innerHTML=e
         col.addEventListener('click',function(e){
-            target.element = e.target
             target.cell = e.target.cellIndex
             target.row= e.target.parentElement.rowIndex
-            /*
-            console.log(e.target.style.backgroundColor)*/
-            switch(e.target.style.backgroundColor){
-                case 'red':
-                    target.now = 'depth'
-                break;
-                case 'blue':
-                    target.now = 'north'
-                break;
-                case 'green':
-                    target.now = 'east'
-                break;
-                default:
-                    target.now='none'
-                break;
-            }
+            
             console.log(target)
             showModalChoice()
         })
@@ -194,31 +172,57 @@ function showModalChoice(){
 
 for(var i =0;i<document.getElementById('modal-choice').children.length;i++){
     document.getElementById('modal-choice').children[i].addEventListener('click',function(e){
-        cell = target.element
+        if(notFoundNames.len!=0){
+            for(var i = 0; i<notFoundNames.len;i++){
+                for(var j in notFoundNames.cells){
+                    if(cells[j]!=-1){
+                        document.getElementById('dvExel').children[row].children[cells[j]]
+                    }
+                    //новое определение всей хероты
+                            
+                }
+            }
+        }
+
+        /*if(target.now!='none'){
+            switch(target.now){
+                case 'depth':
+                    notFoundNames.depth.cell.splice(notFoundNames.depth.cell.indexOf(target.cell),1)
+                    notFoundNames.depth.row.splice(notFoundNames.depth.row.indexOf(target.row),1)
+                break;
+                case 'north':
+                    notFoundNames.north.cell.splice(notFoundNames.north.cell.indexOf(target.cell),1)
+                    notFoundNames.north.row.splice(notFoundNames.north.row.indexOf(target.row),1)
+                break;
+                case 'east':
+                    notFoundNames.east.cell.splice(notFoundNames.east.cell.indexOf(target.cell),1)
+                    notFoundNames.east.row.splice(notFoundNames.east.row.indexOf(target.row),1)
+
+            }
+        }
         switch(e.target.id){
             case 'depth':
                 cell.style.backgroundColor='red'
-                notFoundNames.depth.cell.push(cell.cell)
-                notFoundNames.depth.row.push(cell.row)
+                notFoundNames.depth.cell.push(target.cell)
+                notFoundNames.depth.row.push(target.row)
             break;
             case 'north':
                 cell.style.backgroundColor='blue'
-                notFoundNames.north.cell.push(cell.cell)
-                notFoundNames.north.row.push(cell.row)
+                notFoundNames.north.cell.push(target.cell)
+                notFoundNames.north.row.push(target.row)
             break;
             case 'east':
                 cell.style.backgroundColor='green'
-                notFoundNames.east.cell.push(cell.cell)
-                notFoundNames.east.row.push(cell.row)
+                notFoundNames.east.cell.push(target.cell)
+                notFoundNames.east.row.push(target.row)
             break;
             case 'abort':
                 cell.style.backgroundColor='rgb(31,31,31)'
             break;
             //нужна логика добавления в "временный список"
-        }
-        if(cell.now!='none'){
-            
-        }
+        }*/
+        
+        console.log(notFoundNames)
         document.getElementById('modal-choice').classList.remove('active')
         document.getElementById('modal-overlay').classList.remove('active')
     })
