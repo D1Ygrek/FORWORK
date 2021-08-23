@@ -6,9 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
+<body style='background-color: rgb(31,31,31);'>
     <style>
+        .left{
+            width:20%;
+            height:100%;
+            position:fixed;
+            top:0px;
+            left:0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top:20px;
+        }
+        .right{
+            width:80%;
+            height:100%;
+            position:fixed;
+            top:0px;
+            right: 0px;
+            overflow: auto;
+            background-color:#2a2c2b;
+        }
         table{
+            margin-left:10px;
+            margin-top:10px;
             border-spacing: 0;
             background-color: rgb(31,31,31);
             color:white;
@@ -19,6 +41,27 @@
             font-size: 0.8rem;
             text-align: center;
         }
+        .upload-area-button{
+		    border-radius:12px;
+            height:67px;
+            width:80%;
+            margin-bottom: 20px;
+            color:white;
+            background-color:#177ddc;
+            border:none;
+            font-size:1.7rem;
+            border:1px solid #177ddc;
+            transition: 0.2s ease;
+        }
+        .upload-area-button:hover{
+		    background-color:gray
+	    }
+        .inactive{
+		    background-color:rgb(10,34,46);
+	    }
+	    .inactive:hover{
+		    background-color:rgb(10,34,46);
+	    }
         .modal-overlay{
             opacity: 0;
             visibility: hidden;
@@ -48,6 +91,26 @@
             justify-content: center;
             flex-direction: column;
         }
+        .modal-info{
+            opacity: 0;
+            visibility: hidden;
+            position:fixed;
+            top:50%;
+            left:50%;
+            width:100%;
+            max-width: 500px;
+            height:100%;
+            max-height:400px;
+            transform: translate(-50%,-50%);
+            z-index: 30;
+            background-color: rgb(31,31,31);
+            border-radius: 10px;
+            display:flex;
+            justify-content: center;
+            flex-direction: column;
+            color:white;
+            text-align: center;
+        }
         .modal-button{
             margin: 10px 30px 10px 30px;
             border: 1px solid rgb(31,31,31);
@@ -74,19 +137,37 @@
             color:white;
             border-color:white;
         }
-        .active{
-            opacity: 1;
-            visibility: visible;
+        .download-text{
+            color:white;
+            font-family:Arial;
+            font-size: 1.2rem;
+            padding-left: 20px;
         }
         .modal-item{
-            height:20px;
-            width:20px;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            height:24px;
+            width:24px;
             position:fixed;
             bottom:10px;
             border-radius: 5px;
             border: 1px solid black;
             text-align: center;
         }
+        .modal-helper{
+            width:100%;
+            height: 100%;
+            vertical-align:middle;
+            padding:0px;
+            margin:0px;
+            text-align: center;
+        }
+        .active{
+            opacity: 1;
+            visibility: visible;
+        }
+        
         .modal-ok{
             right:75px;
             background-color: green;
@@ -99,18 +180,28 @@
             right:25px;
             background-color: yellow;
         }
+        .modal-ask-help{
+            font-weight:bold;
+            padding-top:3px;
+        }
+        #modal-info-buttons{
+            margin-top:50px;
+        }
     </style>
-    <input type="file" id="fileUpload" />
-    <input type="button" id="upload" value="Upload" onclick="Upload()" />
-    <hr />
-    <div>
+    <div id="left" class='left'>
+    <input type="file" id="fileUpload" style='display:none'/>
+    <button class='upload-area-button' id='upload-input-click'>Загрузить файл</button>
+    <input class="upload-area-button inactive" type="button" id="upload-but" value="Просмотр"/>
+    <button class="upload-area-button inactive">OK</button>
+    <p id='download-text' class='download-text'>Загрузите, пожалуйста, файл</p>
+    </div>
+    <div id='right' class='right'>
         <table id="dvExcel">
 
         </table>
     </div>
-    <div id="modal-info" class = "modal-info">
 
-    </div>
+
     <div id="modal-choice" class='modal-choice'>
         <button id="depth" class='modal-button modal-red'>
             Глубина
@@ -125,10 +216,19 @@
             Отмена
         </button>
     </div>
+    <div id="modal-info" class = "modal-info">
+        <div id='modal-info-text'>
+
+        </div>
+        <div id='modal-info-buttons'>
+            <button id='info-ok' class="modal-button modal-ok">OK</button>
+            <button id='info-how' class="modal-button modal-help">КАК?</button>
+        </div>
+    </div>
     <div id="modal-overlay" class="modal-overlay"></div>
-    <div id="modal-ok" class = "modal-item modal-ok">✓</div>
-    <div id="modal-deny" class = "modal-item modal-deny">X</div>
-    <div id="modal-help" class = "modal-item modal-help">?</div>
+    <div id="modal-ok" class = "modal-item modal-ok"><p class='modal-helper'>✓</p></div>
+    <div id="modal-deny" class = "modal-item modal-deny"><p class='modal-helper'>✖</p></div>
+    <div id="modal-help" class = "modal-item modal-help"><p class='modal-helper modal-ask-help'>?</p></div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
     <script src=profileParse.js></script>
