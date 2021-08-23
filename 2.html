@@ -34,6 +34,7 @@
             border-spacing: 0;
             background-color: rgb(31,31,31);
             color:white;
+            min-width:50%;
         }
         td{
             border: 1px solid rgb(128,128,128);
@@ -152,8 +153,11 @@
             position:fixed;
             bottom:10px;
             border-radius: 5px;
-            border: 1px solid black;
+            border: 1px solid #999999;
             text-align: center;
+            color: #666666;
+            background-color: #e6e6e6;
+
         }
         .modal-helper{
             width:100%;
@@ -167,18 +171,19 @@
             opacity: 1;
             visibility: visible;
         }
+        .wide-column{
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
         
         .modal-ok{
-            right:75px;
-            background-color: green;
+            right:99px;
         }
         .modal-deny{
-            right:50px;
-            background-color: red;
+            right:66px;
         }
         .modal-help{
-            right:25px;
-            background-color: yellow;
+            right:33px;
         }
         .modal-ask-help{
             font-weight:bold;

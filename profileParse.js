@@ -213,8 +213,10 @@ function showParsed(data){
 
 function createRowInactive(arrayOfValues){
     var main=document.createElement('tr')
+    main.classList.add('wide-row')
     arrayOfValues.forEach(function(e){
         var col = document.createElement('td')
+        col.classList.add('wide-column')
         col.innerHTML=e
         main.appendChild(col)
     })
@@ -223,7 +225,7 @@ function createRowInactive(arrayOfValues){
 //UI+HELP
 
 
-
+//IF FILE NOT PARSED FROM VOCAB
 function showCanNotParse(){
     document.getElementById('modal-info-text').innerHTML ='В процессе загрузки что-то пошло не так. Пожалуйста, выберите необходимые ячейки вручную.'
     document.getElementById('modal-info').classList.add('active')
@@ -234,6 +236,7 @@ function showCanNotParse(){
 
 }
 
+//CATEGORY PICKER
 function showModalChoice(){
     document.getElementById('modal-choice').classList.add('active')
     document.getElementById('modal-overlay').classList.add('active')    
